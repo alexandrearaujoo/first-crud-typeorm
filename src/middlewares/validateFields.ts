@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 
 const validateFields = (req: Request, res: Response, next: NextFunction) => {
-    const keys = ['email', 'name', 'password']
+    const keys = ['email', 'name']
 
     try {
         keys.forEach((item) => {

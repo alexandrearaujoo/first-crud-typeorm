@@ -1,19 +1,24 @@
-import { users } from "../../database";
+import { User } from "../../entities/user.entity";
 import { UserData } from "../../interfaces/user";
-import { v4 as uuidv4 } from "uuid";
+import { AppDataSource } from "../../data-source";
 
-const UserCreateService = (data: UserData) => {
+const UserCreateService = async (data: UserData) => {
+  const userRepository = AppDataSource.getRepository(User);
+  const users = await userRepository.find();
+
   const emailAlreadyExists = users.find((user) => user.email === data.email);
 
   if (emailAlreadyExists) {
     throw new Error("Email ja esta em uso!");
   }
 
-  data.id = uuidv4();
+  const user = new User();
+  user.email = data.email;
+  user.name = data.name;
 
-  users.push(data);
-
-  return data;
+  userRepository.create(user);
+  await userRepository.save(user);
+  return user;
 };
 
 export default UserCreateService;
