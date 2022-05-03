@@ -1,0 +1,29 @@
+import { User } from "../../entities/user.entity";
+import { AppDataSource } from "../../data-source";
+import { UserLogin } from "../../interfaces/user";
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+
+const UserLoginService = async (data: UserLogin) => {
+    const userRepository = AppDataSource.getRepository(User)
+    const users = await userRepository.find()
+    const account = users.find((user) => user.email === data.email)
+    
+    if (!account) {
+        throw new Error ("Wrong email/password")
+    }
+
+    if(!bcrypt.compareSync(data.password, account.password)){
+        throw new Error ("Wrong email/password")
+    }
+
+    const token = jwt.sign(
+        {email: data.email},
+        String(process.env.JWT_SECRET),
+        {expiresIn: '1d'}
+    )
+
+    return {token, account}
+}
+
+export default UserLoginService
