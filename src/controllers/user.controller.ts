@@ -1,4 +1,5 @@
 import { Response, Request } from "express";
+import { AppError, handleError } from "../errors/AppError";
 import DeleteUserService from "../services/user/deleteUser.service";
 import UserListService from "../services/user/listUsers.service";
 import ShowUser from "../services/user/showUser.service";
@@ -14,8 +15,8 @@ class UserController {
 
       return res.status(201).json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
+      if (error instanceof AppError) {
+        handleError(error, res)
       }
     }
   }
@@ -26,8 +27,8 @@ class UserController {
 
       return res.status(200).json(users);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
+      if (error instanceof AppError) {
+        handleError(error, res)
       }
     }
   }
@@ -41,8 +42,8 @@ class UserController {
 
       return res.status(200).json(user)
     } catch (error) {
-      if (error instanceof Error){
-        return res.status(401).json({message: error.message})
+      if (error instanceof AppError) {
+        handleError(error, res)
       }
     }
   }
@@ -62,8 +63,8 @@ class UserController {
 
 
     } catch (error) {
-      if (error instanceof Error){
-        return res.status(401).json({message: error.message})
+      if (error instanceof AppError) {
+        handleError(error, res)
       }
     }
   }
@@ -77,8 +78,8 @@ class UserController {
       return res.status(200).json({message: "User deleted with sucess!"})
       
     } catch (error) {
-      if (error instanceof Error){
-        return res.status(401).json({message: error.message})
+      if (error instanceof AppError) {
+        handleError(error, res)
       }
     }
   }
