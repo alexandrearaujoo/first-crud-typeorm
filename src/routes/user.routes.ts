@@ -1,18 +1,20 @@
 import { Router } from "express";
 import UserController from "../controllers/user.controller";
-import SessionController from "../controllers/session.controller"; 
+import SessionController from "../controllers/session.controller";
 import AuthUser from "../middlewares/AuthUser";
 import { ValidateFields } from "../middlewares/validateFields";
 import { userCreateSchema } from "../middlewares/validateFields";
 
+const router = Router();
 
-const userRouter = Router();
+export const userRouter = () => {
+  router.post("", ValidateFields(userCreateSchema), UserController.create);
+  router.post("/login", SessionController.login);
+  router.get("", UserController.index);
+  router.get("/me", AuthUser, UserController.show);
+  router.patch("/me/updatePassword", AuthUser, UserController.update);
+  router.delete("/me", AuthUser, UserController.delete);
 
-userRouter.post("", ValidateFields(userCreateSchema), UserController.create);
-userRouter.post("/login", SessionController.login)
-userRouter.get("", UserController.index);
-userRouter.get("/me", AuthUser, UserController.show)
-userRouter.patch("/me/updatePassword", AuthUser, UserController.update)
-userRouter.delete("/me", AuthUser, UserController.delete)
+  return router
+};
 
-export default userRouter;
